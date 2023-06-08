@@ -4,16 +4,39 @@ from django.http import HttpResponse
 
 # Create your views here.
 
+menu = [
+    {'title': "О сайте", 'url_name': 'about'},
+    {'title': "Машины парка", 'url_name': 'cars'},
+    {'title': "Водители парка", 'url_name': 'drivers'},
+]
+
+
 def index_main(request):
-    return HttpResponse('<h1>Main page</h1>')
+    return HttpResponse('<h1>Main page</h1>')  # Всегда веб-страничка долна возвращаться (результат ответа на запрос
 
 
 def index_my_app(request):
-    return HttpResponse('<h1>My_app_page</h1>')
+    title = 'Моя главная страница'
+    context = {'title': title, 'menu': menu}
+    return render(request, 'my_app/index.html', context=context)
 
 
 def about(request):
-    return HttpResponse('<h1>About_site</h1>')
+    title = 'О сайте'
+    context = {'title': title, 'menu': menu}
+    return render(request, 'my_app/about.html', context=context)
+
+
+def cars(request):
+    title = 'Машины'
+    context = {'title': title, 'menu': menu}
+    return render(request, 'my_app/cars.html', context=context)
+
+
+def drivers(request):
+    title = 'Водители'
+    context = {'title': title, 'menu': menu}
+    return render(request, 'my_app/drivers.html', context=context)
 
 
 def login(request):
@@ -27,3 +50,5 @@ def contacts(request, id):
     # return HttpResponse(f'Page_contacts, id = {id}')
     get_params = {'mane': name, "age": age}
     return HttpResponse(f'Page contacts, url_parametr_id = {url_id}, get_params = {get_params}')
+
+

@@ -1,4 +1,6 @@
 from django.db import models
+
+
 # 1. Create your models here.
 # 2. Createmigrations: python manage.py makemigrations
 # 3. python manage.py migrate
@@ -17,7 +19,6 @@ class Person(models.Model):
     class Meta:
         verbose_name = 'Человек'
         verbose_name_plural = 'Люди'
-
 
 
 class Car(models.Model):
