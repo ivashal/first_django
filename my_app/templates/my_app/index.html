@@ -1,8 +1,7 @@
 {% extends 'my_app/base.html' %}
 
 {% block content %}
-
+<h1>{{title}}</h1>
 Содержимое главной страницы
-
-<p>Здесь текст главной страницы</p>
+<p><a href="{% url 'login' %}">Войти</a></p>
 {% endblock %}
