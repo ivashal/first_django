@@ -6,7 +6,7 @@ from django.db import models
 # 3. python manage.py migrate
 
 # Create your models here.
-class Person(models.Model):
+class Driver(models.Model):
     name = models.CharField(max_length=100, verbose_name='Имя')
     age = models.IntegerField(verbose_name='Возраст')
     city = models.CharField(max_length=100, verbose_name='Город')
