@@ -31,6 +31,8 @@ def about(request):
 
 def cars(request):
     title = 'Машины'
+    car = Car.objects.all()
+
     context = {'title': title, 'menu': menu}
     return render(request, 'my_app/cars.html', context=context)
 
@@ -47,8 +49,8 @@ def login(request):
     context = {'title': title, 'menu': menu}
 
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        username = request.POST.get('username')  # Получение данных из POST запроса
+        password = request.POST.get('password')  # оно не связано с маршрутом
         return HttpResponse(f'Login - {username}, Password - {password}')
 
     if request.method == 'GET':

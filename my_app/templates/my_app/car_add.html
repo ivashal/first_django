@@ -5,7 +5,7 @@
 Добавить машину:
 <form action="{% url 'add_car' %}" method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.as_p }}   <!--as_p - метод отображения формы, добавлять абзац между формами-->
     <button type="submit">Добавить</button>
 </form>
 {% endblock %}
