@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 # 1. Create your models here.
@@ -53,3 +54,30 @@ class Client(models.Model):
     class Meta:
         verbose_name = 'Клиент'
         verbose_name_plural = 'Клиенты'
+
+
+
+class Employee(models.Model):
+    edu_choises = [('middle', 'среднее'),
+                   ('high', 'высшее'),
+                   ('profesional', 'профессиональное'),
+                   ]
+
+    firstname = models.CharField(max_length=50, verbose_name='Имя')
+    lastname = models.CharField(max_length=50, verbose_name='Фамилия')
+    birthday = models.DateField(verbose_name='Дата рождения')
+    position = models.CharField(max_length=50, verbose_name='Должность')
+    education = models.CharField(max_length=30, choices=edu_choises)
+
+    def str(self):
+        return ' '.join([str(self.firstname), str(self.lastname)])
+
+    def get_absolute_url(self):
+        return reverse('my_app:employee_list')
+
+    # def get_absolute_url(self):
+    #     return reverse("author-detail", kwargs={"pk": self.pk})
+
+    class Meta:
+        verbose_name = 'Сотрудник'
+        verbose_name_plural = 'Сотрудники'

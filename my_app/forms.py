@@ -2,6 +2,9 @@ from django import forms
 from django.forms import ModelForm
 from .models import *
 import datetime
+from f_project.settings import DATE_INPUT_FORMATS
+
+
 
 def year_choices():
     return [(r,r) for r in range(1950, datetime.date.today().year+1)]
@@ -28,3 +31,5 @@ class ClientForm(ModelForm):
     class Meta:
         model = Client
         exclude = ['age', 'created_at']
+
+    birthday = forms.DateField(input_formats=DATE_INPUT_FORMATS, label='Дата рождения')
