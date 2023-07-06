@@ -18,11 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 from my_app import urls as my_app_urls
 from users import urls as users_urls
-from my_app.views import index_main, login
+from my_app.views import index_my_app, login  ## index_main
 
 
 urlpatterns = [
-    path('', index_main),
+    path('', index_my_app),
+    #path('', index_main),
     path('admin/', admin.site.urls),
     path('my_app/', include(my_app_urls)),    # Вложеный список маршрутов
     path('my_app/', include(users_urls)),

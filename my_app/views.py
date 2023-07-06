@@ -13,7 +13,9 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required  ## Требует авторизации пользователя
+from django.contrib.admin.views.decorators import staff_member_required  ## Требует авторизации Админа
+
 # Create your views here.
 
 menu = [{'title': "О сайте", 'url_name': 'my_app:about'},
@@ -22,11 +24,11 @@ menu = [{'title': "О сайте", 'url_name': 'my_app:about'},
         {'title': "Клиенты", 'url_name': 'my_app:clients'},
         {'title': "Сотрудники", 'url_name': 'my_app:employee_list'},
 
-]
+        ]
 
 
-def index_main(request):
-    return HttpResponse('<h1>Main page</h1>')  # Всегда веб-страничка долна возвращаться (результат ответа на запрос
+# def index_main(request):
+#     return HttpResponse('<h1>Main page</h1>')  # Всегда веб-страничка долна возвращаться (результат ответа на запрос
 
 
 def index_my_app(request):
@@ -40,6 +42,7 @@ def about(request):
     context = {'title': title, 'menu': menu}
     return render(request, 'my_app/about.html', context=context)
 
+
 def contacts(request, id):
     url_id = id
     name = request.GET.get('name')  # То, что мы передаем через ? &
@@ -49,12 +52,14 @@ def contacts(request, id):
     return HttpResponse(f'Page contacts, url_parametr_id = {url_id}, get_params = {get_params}')
 
 
+@login_required()  ## Декоратор который ограничивает доступ к ссылкам незарег-м пользователям
 def cars(request):
     title = 'Машины'
-    car = Car.objects.all()
+    cars = Car.objects.all()
 
-    context = {'title': title, 'menu': menu}
+    context = {'title': title, 'menu': menu, 'cars': cars}
     return render(request, 'my_app/cars.html', context=context)
+
 
 @login_required
 def drivers(request):
@@ -62,7 +67,8 @@ def drivers(request):
     context = {'title': title, 'menu': menu}
     return render(request, 'my_app/drivers.html', context=context)
 
-@login_required
+
+@staff_member_required()  ## Вход только суперпользователям или админам
 def clients(request):
     title = 'Клиенты'
     clients = Client.objects.all()
@@ -73,6 +79,8 @@ def clients(request):
     context = {'title': title, 'menu': menu, 'clients': clients, 'page_obj': page_obj}
 
     return render(request, 'my_app/clients.html', context=context)
+
+
 def add_car(request):
     if request.method == 'GET':
         title = 'Добавить машину'
@@ -115,13 +123,10 @@ def login(request):
         return render(request, 'my_app/login.html', context=context)
 
 
-
 def clients(request):
     title = 'Клиенты'
     context = {'title': title, 'menu': menu}
     return render(request, 'my_app/clients.html', context=context)
-
-
 
 
 def add_driver(request):
@@ -168,6 +173,7 @@ class EmployeeDetail(DetailView):
 
         return context
 
+
 class EmployeeCreate(CreateView):
     model = Employee
     fields = '__all__'
@@ -184,4 +190,3 @@ class EmployeeDelete(DeleteView):
     model = Employee
     template_name = 'my_app/delete.html'
     success_url = reverse_lazy('my_app:employee_list')
-

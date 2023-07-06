@@ -4,7 +4,6 @@
          <title>{{title}}</title>
 </head>
 <body>
-    <a href="{% url 'users:register' %}"> Регистрация </a>
     {% if user.is_authenticated %}
     <p>Привет, {{user.username}}</p>
     {% endif %}

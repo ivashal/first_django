@@ -1,7 +1,7 @@
 {% extends 'my_app/base.html' %}
 {% block content %}
 
-<form id='login-form' action="{% url 'login' %}" method="post">
+<form id='login-form' action="{% url 'my_app:login' %}" method="post">
     {% csrf_token %}
     <input type="hidden" name="_csrf">
     <label for="username">Username</label><br>

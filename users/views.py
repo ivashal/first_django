@@ -38,7 +38,7 @@ def log_in(request):
         if user is not None:
             login(request, user)
             # url = reverse('main:index')
-            url = request.GET.get('next', LOGIN_REDIRECT_URL)
+            url = request.GET.get('next', LOGIN_REDIRECT_URL)  ## LRU - В settings.py  в низу
             return redirect(url)
 
     return render(request, 'users/login.html', {'form': form, 'menu': menu})
@@ -46,5 +46,5 @@ def log_in(request):
 
 def log_out(request):
     logout(request)
-    url = reverse('main:index')
+    url = reverse('my_app:index')
     return redirect(url)

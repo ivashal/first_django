@@ -13,7 +13,7 @@
 {% for car in cars %}
          <tr>
             <td align="center" >{{car.id}}</td>
-            <td align="center">{{car.brand}}</td>
+             <td align="center" ><a href="{% url 'my_app:car_detail' pk=car.id %}">{{car.brand}}</a></td>t
             <td align="center">{{car.model}}</td>
             <td align="center">{{car.color}}</td>
             <td align="center">{{car.power}}</td>
@@ -22,6 +22,7 @@
 {% endfor %}
 
 </table>
-
-<p><a href="{% url 'add_car' %}">Добавить машину</a></p>
+{% if user.is_staff %}
+<p><a href="{% url 'my_app:add_car' %}">Добавить машину</a></p>
+{% endif %}
 {% endblock %}
