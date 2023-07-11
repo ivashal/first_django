@@ -3,7 +3,7 @@
 {% block content %}
 <h1>{{title}}</h1>
 Добавить машину:
-<form action="{% url 'my_app:add_car' %}" method="post">
+<form action="{% url 'my_app:add_car' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}   <!--as_p - метод отображения формы, добавлять абзац между формами-->
     <button type="submit">Добавить</button>

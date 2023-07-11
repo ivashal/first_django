@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.http import HttpResponse
 from .forms import CarForm, DriverForm, ClientForm
 from .models import *
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
@@ -23,6 +23,7 @@ menu = [{'title': "О сайте", 'url_name': 'my_app:about'},
         {'title': "Водители парка", 'url_name': 'my_app:drivers'},
         {'title': "Клиенты", 'url_name': 'my_app:clients'},
         {'title': "Сотрудники", 'url_name': 'my_app:employee_list'},
+        {'title': "Заказы", 'url_name': 'my_app:order_list'},
 
         ]
 
@@ -64,9 +65,16 @@ def cars(request):
 @login_required
 def drivers(request):
     title = 'Водители'
-    context = {'title': title, 'menu': menu}
+    drivers = Driver.objects.all()
+    context = {'title': title, 'menu': menu, 'drivers': drivers}
     return render(request, 'my_app/drivers.html', context=context)
 
+
+def driver_card(request, pk):
+    title = 'Driver info'
+    driver = get_object_or_404(Driver, pk=pk)
+    context = {'menu': menu, 'title': title, 'driver': driver}
+    return render(request, 'myapp/driver_card.html', context=context)
 
 @staff_member_required()  ## Вход только суперпользователям или админам
 def clients(request):
@@ -89,7 +97,7 @@ def add_car(request):
         return render(request, 'my_app/car_add.html', context=context)
 
     if request.method == 'POST':
-        carform = CarForm(request.POST)
+        carform = CarForm(request.POST, request.FILES)
         if carform.is_valid():
             car = Car()
             car.brand = carform.cleaned_data['brand']
@@ -97,6 +105,7 @@ def add_car(request):
             car.color = carform.cleaned_data['color']
             car.power = carform.cleaned_data['power']
             car.year = carform.cleaned_data['year']
+            car.image = carform.cleaned_data['image']
             car.save()
         return cars(request)
 
@@ -125,8 +134,37 @@ def login(request):
 
 def clients(request):
     title = 'Клиенты'
-    context = {'title': title, 'menu': menu}
+    clients = Client.objects.all()
+    context = {'title': title, 'menu': menu, 'clients': clients}
     return render(request, 'my_app/clients.html', context=context)
+
+
+def add_client(request):
+
+    title = 'Добавить клиента'
+
+    if request.method == 'POST':
+        form = ClientForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            age = datetime.date.today().year - form.cleaned_data['birthday'].year
+            instance.age = age
+            instance.save()
+            # form.save()
+            return clients(request)
+    else:
+        form = ClientForm()
+    context = {'title': title, 'menu': menu, 'form': form}
+    return render(request, 'my_app/client_add.html', context=context)
+
+
+def client_card(request, pk):
+    title = 'Client info'
+    # client = Client.objects.get(pk=pk)
+    client = get_object_or_404(Client, pk=pk)
+    context = {'menu': menu, 'title': title, 'client': client}
+
+    return render(request, 'my_app/client_card.html', context=context)
 
 
 def add_driver(request):
@@ -136,11 +174,6 @@ def add_driver(request):
     return render(request, 'my_app/driver_add.html', context=context)
 
 
-def add_client(request):
-    title = 'Добавить клиента'
-    form = ClientForm()
-    context = {'title': title, 'menu': menu, 'form': form}
-    return render(request, 'my_app/client_add.html', context=context)
 
 
 class EmployeeList(ListView):
@@ -190,3 +223,15 @@ class EmployeeDelete(DeleteView):
     model = Employee
     template_name = 'my_app/delete.html'
     success_url = reverse_lazy('my_app:employee_list')
+
+
+class OrderCreate(CreateView):  ##
+    model = Order
+    fields = '__all__'
+    template_name = 'my_app/order_form.html'
+
+
+class OrderList(ListView):
+    model = Order
+    template_name = 'my_app/order_list.html'
+    context_object_name = 'objects'

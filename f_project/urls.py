@@ -19,6 +19,8 @@ from django.urls import path, include
 from my_app import urls as my_app_urls
 from users import urls as users_urls
 from my_app.views import index_my_app, login  ## index_main
+from f_project import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -29,3 +31,6 @@ urlpatterns = [
     path('my_app/', include(users_urls)),
     path('login/', login, name='login'),
 ]
+
+if settings.DEBUG:  ##  Делается для того, чтобы использовать статику (картинки, медиа) в режиме отладки
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  ## В "Боевом режиме запускается на другом вэб-сервере"

@@ -18,8 +18,8 @@ class Driver(models.Model):
         # return ' '.join([str(self.brand), str(self.model)])
 
     class Meta:
-        verbose_name = 'Человек'
-        verbose_name_plural = 'Люди'
+        verbose_name = 'Водитель'
+        verbose_name_plural = 'Водители'
 
 
 
@@ -50,7 +50,9 @@ class Car(models.Model):
     color = models.CharField(max_length=30,choices=colors, verbose_name='Цвет')
     power = models.IntegerField(verbose_name='Мощнощность (л\с)')
     year = models.IntegerField(verbose_name='Год выпуска')
+    image = models.ImageField(upload_to='cars/', blank=True, null=True)
 
+    #
     def __str__(self):  # Приватный метод который возвращает имя строчки
         return f'{self.brand} {self.model}'
         # return ' '.join([str(self.brand), str(self.model)])
@@ -64,11 +66,11 @@ class Client(models.Model):
     name = models.CharField(max_length=30, verbose_name='Имя')
     last_name = models.CharField(max_length=30, verbose_name='Фамилия')
     birthday = models.DateField(verbose_name='Дата рождения')
-    age = models.IntegerField(verbose_name='Возраст')
+    age = models.IntegerField(verbose_name='Возраст', null=True)
     city = models.CharField(max_length=30, verbose_name='Город')
     phone = models.CharField(max_length=20, verbose_name='Телефон')
     email = models.EmailField(verbose_name='Эл. почта')
-    created_at = models.DateTimeField(auto_created=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return ' '.join([self.name, self.last_name])
@@ -103,3 +105,22 @@ class Employee(models.Model):
     class Meta:
         verbose_name = 'Сотрудник'
         verbose_name_plural = 'Сотрудники'
+
+
+class Order(models.Model):
+    car = models.ForeignKey(Car, on_delete=models.DO_NOTHING, related_name='cars', verbose_name='Марка')
+    driver = models.ForeignKey(Driver, on_delete=models.DO_NOTHING, related_name='driver', verbose_name='Водитель')
+    client = models.ForeignKey(Client, on_delete=models.DO_NOTHING, related_name='client', verbose_name='Клиент')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return ' '.join([str(self.id), str(self.client)])
+
+    def get_absolute_url(self):
+        return reverse('my_app:order_list')
+
+    class Meta:
+        verbose_name = 'Заказ'
+        verbose_name_plural = 'Заказы'
+
+
