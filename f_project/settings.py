@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'my_app',
     'users',
     'sorl.thumbnail',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

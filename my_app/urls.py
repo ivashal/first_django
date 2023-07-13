@@ -10,6 +10,7 @@ urlpatterns = [
 
     path('cars/<int:pk>/', car_detail, name='car_detail'),
     path('cars/', cars, name='cars'),
+    path('cars/search/', car_search, name='car_search'),
 
     path('drivers/<int:pk>/', driver_card, name='driver_card'),
     path('drivers/', drivers, name='drivers'),

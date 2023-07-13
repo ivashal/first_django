@@ -7,8 +7,10 @@ import datetime
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.http import HttpResponse
+from .filter import CarFilter
 from .forms import *
 from .models import *
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
@@ -54,11 +56,13 @@ def contacts(request, id):
 
 
 @login_required()  ## Декоратор который ограничивает доступ к ссылкам незарег-м пользователям
-def cars(request):
+def cars(request, cars=None):
     title = 'Машины'
-    cars = Car.objects.all()
+    f = CarFilter(request.GET, queryset=Car.objects.all())
+    if not request.GET.get('query'):
+        cars = Car.objects.all()
 
-    context = {'title': title, 'menu': menu, 'cars': cars}
+    context = {'title': title, 'menu': menu, 'cars': cars, 'filter': f}
     return render(request, 'my_app/cars.html', context=context)
 
 
@@ -243,3 +247,11 @@ class OrderList(ListView):
     model = Order
     template_name = 'my_app/order_list.html'
     context_object_name = 'objects'
+
+
+def car_search(request):
+    if request.method == 'GET':
+        query = request.GET.get('query')
+        ft = Q(model__icontains=query) | Q(year__icontains=query) | Q(brand__name__icontains=query)
+        results = Car.objects.filter(ft)
+        return cars(request, cars=results)
