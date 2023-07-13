@@ -27,21 +27,31 @@ class CarForm(forms.ModelForm):
 
 
 
-class DriverForm(forms.Form):
-    name = forms.CharField(max_length=50, label='Имя водителя')
-    age = forms.IntegerField(label='Возраст', min_value=18, max_value=120)
-    city = forms.CharField(max_length=50, label='Город', required=False)
-
+class DriverForm(ModelForm):
+    # name = forms.CharField(max_length=50, label='Имя водителя')
+    # age = forms.IntegerField(label='Возраст', min_value=18, max_value=120)
+    # city = forms.CharField(max_length=50, label='Город', required=False)
+    class Meta:
+        model = Driver
+        fields = '__all__'
 
 class ClientForm(ModelForm):
     class Meta:
         model = Client
         exclude = ['age', 'created_at']
 
-    birthday = forms.DateField(input_formats=DATE_INPUT_FORMATS, label='Дата рождения')
+    birthday = forms.DateField(input_formats=DATE_INPUT_FORMATS, label='Дата рождения', widget=forms.DateInput(attrs={'type': 'date'}))
 
 
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
+        fields = '__all__'
+
+
+class EmployeeForm(forms.ModelForm):
+    birthday = forms.DateField(input_formats=DATE_INPUT_FORMATS, label='Дата рождения', widget=forms.DateInput(attrs={'type': 'date'}))
+
+    class Meta:
+        model = Employee
         fields = '__all__'

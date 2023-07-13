@@ -1,9 +1,14 @@
 {% extends 'my_app/base.html' %}
+{% load thumbnail %}
  
 {% block content %}
 <h1>{{title}}</h1>
 {% if object.image %}
-<img src="{{ object.image.url }}" />
+<a href="{{ object.image.url }}" target="_self">
+    {% thumbnail object.image "200x130" crop="center" as im %}
+    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+</a>
+{% endthumbnail %}
 {% endif %}
 <ul>
 <li>Brand - {{object.brand}}</li>

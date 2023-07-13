@@ -11,7 +11,7 @@ class Driver(models.Model):
     name = models.CharField(max_length=100, verbose_name='Имя')
     age = models.IntegerField(verbose_name='Возраст')
     city = models.CharField(max_length=100, verbose_name='Город')
-    is_activated = models.BooleanField(verbose_name='Активнация')
+    #is_activated = models.BooleanField(verbose_name='Активнация')
 
     def __str__(self):  # Приватный метод который возвращает имя строчки
         return f'{self.name} {self.city}'

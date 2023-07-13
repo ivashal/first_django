@@ -13,7 +13,7 @@
 {% for car in cars %}
          <tr>
             <td align="center" >{{car.id}}</td>
-             <td align="center" ><a href="{% url 'my_app:car_detail' pk=car.id %}">{{car.brand}}</a></td>t
+             <td align="center" ><a href="{% url 'my_app:car_detail' pk=car.id %}">{{car.brand}}</a></td>
             <td align="center">{{car.model}}</td>
             <td align="center">{{car.color}}</td>
             <td align="center">{{car.power}}</td>

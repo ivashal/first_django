@@ -7,7 +7,7 @@ import datetime
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.http import HttpResponse
-from .forms import CarForm, DriverForm, ClientForm
+from .forms import *
 from .models import *
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
@@ -74,7 +74,7 @@ def driver_card(request, pk):
     title = 'Driver info'
     driver = get_object_or_404(Driver, pk=pk)
     context = {'menu': menu, 'title': title, 'driver': driver}
-    return render(request, 'myapp/driver_card.html', context=context)
+    return render(request, 'my_app/driver_card.html', context=context)
 
 @staff_member_required()  ## Вход только суперпользователям или админам
 def clients(request):
@@ -169,10 +169,15 @@ def client_card(request, pk):
 
 def add_driver(request):
     title = 'Добавить водителя'
-    form = DriverForm()
+    if request.method == 'POST':
+        form = DriverForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return drivers(request)
+    else:
+        form = DriverForm()
     context = {'title': title, 'menu': menu, 'form': form}
     return render(request, 'my_app/driver_add.html', context=context)
-
 
 
 
@@ -209,8 +214,11 @@ class EmployeeDetail(DetailView):
 
 class EmployeeCreate(CreateView):
     model = Employee
-    fields = '__all__'
+    # fields = '__all__'
+    form_class = EmployeeForm
     template_name = 'my_app/employee_form.html'
+
+
 
 
 class EmployeeUpdate(UpdateView):
