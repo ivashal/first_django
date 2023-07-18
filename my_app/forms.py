@@ -31,16 +31,27 @@ class DriverForm(ModelForm):
     # name = forms.CharField(max_length=50, label='Имя водителя')
     # age = forms.IntegerField(label='Возраст', min_value=18, max_value=120)
     # city = forms.CharField(max_length=50, label='Город', required=False)
+    birthday = forms.DateField(
+        input_formats=DATE_INPUT_FORMATS,
+        label='Дата рождения',
+        widget=forms.DateInput(attrs={'type': 'date'})
+    )
     class Meta:
         model = Driver
         fields = '__all__'
+        exclude = ['age']
 
-class ClientForm(ModelForm):
+class ClientForm(forms.ModelForm):
+    birthday = forms.DateField(
+        input_formats=DATE_INPUT_FORMATS,
+        label='Дата рождения',
+        widget=forms.DateInput(attrs={'type': 'date'})
+        )
     class Meta:
         model = Client
         exclude = ['age', 'created_at']
 
-    birthday = forms.DateField(input_formats=DATE_INPUT_FORMATS, label='Дата рождения', widget=forms.DateInput(attrs={'type': 'date'}))
+
 
 
 class OrderForm(forms.ModelForm):

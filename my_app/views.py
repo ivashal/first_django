@@ -176,7 +176,11 @@ def add_driver(request):
     if request.method == 'POST':
         form = DriverForm(request.POST)
         if form.is_valid():
-            form.save()
+            instance = form.save(commit=False)
+            age = datetime.date.today().year - form.cleaned_data['birthday'].year
+            instance.age = age
+            instance.save()
+            # form.save()
             return drivers(request)
     else:
         form = DriverForm()

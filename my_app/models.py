@@ -1,6 +1,8 @@
+import phone_field
 from django.db import models
 from django.urls import reverse
-
+from datetime import date
+from phone_field import PhoneField
 
 # 1. Create your models here.
 # 2. Createmigrations: python manage.py makemigrations
@@ -8,19 +10,28 @@ from django.urls import reverse
 
 # Create your models here.
 class Driver(models.Model):
-    name = models.CharField(max_length=100, verbose_name='Имя')
-    age = models.IntegerField(verbose_name='Возраст')
-    city = models.CharField(max_length=100, verbose_name='Город')
-    #is_activated = models.BooleanField(verbose_name='Активнация')
+    #id = models.AutoField(unique=True, primary_key=True) - Это поле есть по дефолту. Его можно поменять под себя.
+    first_name = models.CharField(max_length=100, verbose_name='Имя', default=None)  ## Везде нужно ограничивать длину
+    last_name = models.CharField(max_length=100, verbose_name='Имя', default='')
+    birthday = models.DateField(verbose_name='Дата рождения', default=date.today)
+    age = models.IntegerField(verbose_name='Возраст', null=True)
+    city = models.CharField(max_length=100, verbose_name='Город', null=True)
+    passport = models.CharField(max_length=15, verbose_name='Паспорт', unique=True, null=False, default=None)
+    email = models.EmailField(verbose_name='Эл. почта', unique=True)
+    is_activated = models.BooleanField(verbose_name='Активация', default=True)
+
 
     def __str__(self):  # Приватный метод который возвращает имя строчки
-        return f'{self.name} {self.city}'
-        # return ' '.join([str(self.brand), str(self.model)])
+        return f'{self.first_name} {self.last_name} - {self.city}'
+        # return ' '.join([str(self.first_name), str(self.last_name)])
 
     class Meta:
         verbose_name = 'Водитель'
         verbose_name_plural = 'Водители'
-
+        ordering = ['last_name', '-birthday']  ## "-" Обратная сортировка
+        unique_together = (
+            ('first_name', 'last_name', 'passport')
+        )
 
 
 
@@ -60,6 +71,7 @@ class Car(models.Model):
     class Meta:
         verbose_name = 'Машина'
         verbose_name_plural = 'Машины'
+        ordering = ['-year', 'model']  ## По дефолту "по возрастанию", Если поставить "-", то по убыванию.
 
 
 class Client(models.Model):
@@ -68,8 +80,8 @@ class Client(models.Model):
     birthday = models.DateField(verbose_name='Дата рождения')
     age = models.IntegerField(verbose_name='Возраст', null=True)
     city = models.CharField(max_length=30, verbose_name='Город')
-    phone = models.CharField(max_length=20, verbose_name='Телефон')
-    email = models.EmailField(verbose_name='Эл. почта')
+    phone = phone_field.PhoneField(blank=True, help_text='Ваш номер телефона', verbose_name='Телефон', unique=True)
+    email = models.EmailField(verbose_name='Эл. почта', unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -78,6 +90,10 @@ class Client(models.Model):
     class Meta:
         verbose_name = 'Клиент'
         verbose_name_plural = 'Клиенты'
+        ordering = ['last_name']
+        unique_together = (
+            ('name', 'last_name', 'email')
+        )
 
 
 
